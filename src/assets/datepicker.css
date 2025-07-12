@@ -1,0 +1,15 @@
+.react-datepicker.calendario-agendamento {
+  font-family: 'Inter', sans-serif;
+  transform: scale(1);
+  transform-origin: top;
+  margin: 0;
+  padding: 0;
+  height: 19rem;
+}
+
+.react-datepicker__day-name,
+.react-datepicker__day {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
