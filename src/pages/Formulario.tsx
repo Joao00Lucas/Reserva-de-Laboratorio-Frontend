@@ -61,19 +61,13 @@ function Formulario() {
   const [repeticao, setRepeticao] = useState<Repeticao>({ tipo: 'nenhuma', dataFinal: null });
   const [anotacoes, setAnotacoes] = useState('');
   const [labs, setLabs] = useState<{ id: string, name: string }[]>([]);
-  const [classGroups, setClassGroups] = useState<{ id: number, name: string }[]>([]);
-  const [selectedClassGroup, setSelectedClassGroup] = useState<number | null>(null);
   const [agendamentos, setAgendamentos] = useState<{ data: Date; horarios: string[] }[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [labsRes, groupsRes] = await Promise.all([
-          fetch("http://localhost:5000/labs"),
-          fetch("http://localhost:5000/classes")
-        ]);
+        const labsRes = await fetch("http://localhost:5000/labs");
         setLabs(await labsRes.json());
-        setClassGroups(await groupsRes.json());
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
       }
@@ -138,8 +132,7 @@ function Formulario() {
       !intervaloTempo.dataInicio ||
       !intervaloTempo.horaInicio ||
       !laboratorio ||
-      !responsavel ||
-      !selectedClassGroup
+      !responsavel
     ) {
       alert("Preencha todos os campos obrigatórios");
       return;
@@ -161,7 +154,6 @@ function Formulario() {
     const payload = {
       labId: laboratorio,
       responsible: responsavel.nome,
-      classGroupId: selectedClassGroup,
       students: estudantes.map(est => est.id),
       startTime: formatDateTimeLocal(startTime),
       endTime: formatDateTimeLocal(endTime),
@@ -231,21 +223,6 @@ function Formulario() {
           <div className="w-1/2 pl-4 overflow-y-auto flex flex-col items-center gap-4" id="formulario-agendamento">
             <BlocoTodoDia value={todoDia} onChange={setTodoDia} />
             <SeletorDataHora onChange={setIntervaloTempo} />
-
-            <div className="w-[30rem] flex items-center bg-[#dad8d8] rounded-lg p-1 text-[#414040] gap-3">
-              <i className="bx bxs-group text-2xl"></i>
-              <select
-                value={selectedClassGroup || ''}
-                onChange={(e) => setSelectedClassGroup(Number(e.target.value))}
-                required
-                className="w-full bg-transparent text-[#414040] text-base font-normal outline-none"
-              >
-                <option value="">Selecione a Turma</option>
-                {classGroups.map(group => (
-                  <option key={group.id} value={group.id}>{group.name}</option>
-                ))}
-              </select>
-            </div>
 
             <div className="w-[30rem] flex items-center bg-[#dad8d8] rounded-lg p-1 text-[#414040] gap-3">
               <i className="bx bxs-flask text-2xl"></i>
